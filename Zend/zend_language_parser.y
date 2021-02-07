@@ -388,9 +388,13 @@ top_statement:
 		'{' top_statement_list '}'
 			{ $$ = zend_ast_create(ZEND_AST_NAMESPACE, NULL, $4); }
 	|	T_USE mixed_group_use_declaration ';'		{ $$ = $2; }
+	|	T_IMPORT mixed_group_use_declaration ';'	{ $$ = $2; }
 	|	T_USE use_type group_use_declaration ';'	{ $$ = $3; $$->attr = $2; }
+	|	T_IMPORT use_type group_use_declaration ';'	{ $$ = $3; $$->attr = $2; }
 	|	T_USE use_declarations ';'					{ $$ = $2; $$->attr = ZEND_SYMBOL_CLASS; }
+	|	T_IMPORT use_declarations ';'				{ $$ = $2; $$->attr = ZEND_SYMBOL_CLASS; }
 	|	T_USE use_type use_declarations ';'			{ $$ = $3; $$->attr = $2; }
+	|	T_IMPORT use_type use_declarations ';'			{ $$ = $3; $$->attr = $2; }
 	|	T_CONST const_list ';'						{ $$ = $2; }
 ;
 
@@ -870,8 +874,8 @@ attributed_class_statement:
 class_statement:
 		attributed_class_statement { $$ = $1; }
 	|	attributes attributed_class_statement { $$ = zend_ast_with_attributes($2, $1); }
-	|	T_USE class_name_list trait_adaptations
-			{ $$ = zend_ast_create(ZEND_AST_USE_TRAIT, $2, $3); }
+	|	T_USE class_name_list trait_adaptations { $$ = zend_ast_create(ZEND_AST_USE_TRAIT, $2, $3); }
+	|	T_IMPORT class_name_list trait_adaptations { $$ = zend_ast_create(ZEND_AST_USE_TRAIT, $2, $3); }
 ;
 
 class_name_list:
@@ -1188,6 +1192,7 @@ returns_ref:
 lexical_vars:
 		%empty { $$ = NULL; }
 	|	T_USE '(' lexical_var_list possible_comma ')' { $$ = $3; }
+	|	T_IMPORT '(' lexical_var_list possible_comma ')' { $$ = $3; }
 ;
 
 lexical_var_list:

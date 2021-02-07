@@ -146,6 +146,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token <ident> T_FINALLY       "'finally'"
 %token <ident> T_THROW         "'throw'"
 %token <ident> T_USE           "'use'"
+%token <ident> T_IMPORT        "'import'"
 %token <ident> T_INSTEADOF     "'insteadof'"
 %token <ident> T_GLOBAL        "'global'"
 %token <ident> T_STATIC        "'static'"
@@ -226,6 +227,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %token T_CURLY_OPEN      "'{$'"
 %token T_PAAMAYIM_NEKUDOTAYIM "'::'"
 %token T_NS_SEPARATOR    "'\\'"
+%token T_NS_SEPARATORC	 "':'"
 %token T_ELLIPSIS        "'...'"
 %token T_COALESCE        "'??'"
 %token T_POW             "'**'"
@@ -400,10 +402,14 @@ use_type:
 group_use_declaration:
 		legacy_namespace_name T_NS_SEPARATOR '{' unprefixed_use_declarations possible_comma '}'
 			{ $$ = zend_ast_create(ZEND_AST_GROUP_USE, $1, $4); }
+	|	legacy_namespace_name T_NS_SEPARATORC '{' unprefixed_use_declarations possible_comma '}'
+			{ $$ = zend_ast_create(ZEND_AST_GROUP_USE, $1, $4); }
 ;
 
 mixed_group_use_declaration:
 		legacy_namespace_name T_NS_SEPARATOR '{' inline_use_declarations possible_comma '}'
+			{ $$ = zend_ast_create(ZEND_AST_GROUP_USE, $1, $4);}
+	|	legacy_namespace_name T_NS_SEPARATORC '{' inline_use_declarations possible_comma '}'
 			{ $$ = zend_ast_create(ZEND_AST_GROUP_USE, $1, $4);}
 ;
 
